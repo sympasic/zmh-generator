@@ -19,20 +19,24 @@ public class MainGenerator {
      * @throws IOException
      */
     public static void doGenerate(Object model) throws TemplateException, IOException {
-        String projectPath = System.getProperty("user.dir");
-        // 整个项目的根路径
-        File parentFile = new File(projectPath).getParentFile();
-        // 输入路径
-        String inputPath = new File(parentFile, "zmh-generator-demo-projects/acm-template").getAbsolutePath();
-        String outputPath = projectPath;
-        // 生成静态文件
-        StaticGenerator.copyFilesByRecursive(inputPath, outputPath);
-        // 生成动态文件
-        String inputDynamicFilePath = projectPath + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
-        String outputDynamicFilePath = outputPath + File.separator + "acm-template/src/com/yupi/acm/MainTemplate.java";
-        DynamicGenerator.doGenerate(inputDynamicFilePath, outputDynamicFilePath, model);
-    }
+        String inputRootPath = "C:\\code\\zmh-generator\\zmh-generator-demo-projects\\acm-template-pro";
+        String outputRootPath = "C:\\code\\zmh-generator\\acm-template-pro";
 
+        String inputPath;
+        String outputPath;
+
+        inputPath = new File(inputRootPath, "src/com/yupi/acm/MainTemplate.java.ftl").getAbsolutePath();
+        outputPath = new File(outputRootPath, "src/com/yupi/acm/MainTemplate.java").getAbsolutePath();
+        DynamicGenerator.doGenerate(inputPath, outputPath, model);
+
+        inputPath = new File(inputRootPath, ".gitignore").getAbsolutePath();
+        outputPath = new File(outputRootPath, ".gitignore").getAbsolutePath();
+        StaticGenerator.copyFilesByHutool(inputPath, outputPath);
+
+        inputPath = new File(inputRootPath, "README.md").getAbsolutePath();
+        outputPath = new File(outputRootPath, "README.md").getAbsolutePath();
+        StaticGenerator.copyFilesByHutool(inputPath, outputPath);
+    }
     public static void main(String[] args) throws TemplateException, IOException {
         MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
         mainTemplateConfig.setAuthor("zmh");
