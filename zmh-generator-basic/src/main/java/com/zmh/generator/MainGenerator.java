@@ -19,8 +19,8 @@ public class MainGenerator {
      * @throws IOException
      */
     public static void doGenerate(Object model) throws TemplateException, IOException {
-        String inputRootPath = "C:\\code\\zmh-generator\\zmh-generator-demo-projects\\acm-template-pro";
-        String outputRootPath = "C:\\code\\zmh-generator\\acm-template-pro";
+        String inputRootPath = "F:\\zmh-generator\\zmh-generator-demo-projects\\acm-template-pro";
+        String outputRootPath = "F:\\zmh-generator";
 
         String inputPath;
         String outputPath;
