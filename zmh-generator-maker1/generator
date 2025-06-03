@@ -1,2 +1,0 @@
-#!/bin/bash
-java -jar target/zmh-generator-maker1-1.0-SNAPSHOT-jar-with-dependencies.jar "$@"
