@@ -2,6 +2,22 @@
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { 
+  DataAnalysis, 
+  Refresh, 
+  Setting, 
+  User, 
+  ArrowDown, 
+  Monitor, 
+  TrendCharts, 
+  Money, 
+  Grid, 
+  Location, 
+  Document, 
+  DataLine, 
+  FolderOpened, 
+  QuestionFilled 
+} from '@element-plus/icons-vue'
 
 const route = useRoute()
 
@@ -15,6 +31,7 @@ const currentBreadcrumb = computed(() => {
     '/reports/employment': '就业报告',
     '/reports/trend': '趋势报告',
     '/data-management': '数据管理',
+    '/data-visualization': '数据可视化大屏',
     '/help': '帮助中心'
   }
   return breadcrumbMap[route.path] || ''
@@ -140,10 +157,14 @@ onMounted(() => {
             <span>数据管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/help">
-            <el-icon><QuestionFilled /></el-icon>
-            <span>帮助中心</span>
-          </el-menu-item>
+                      <el-menu-item index="/data-visualization">
+              <el-icon><Monitor /></el-icon>
+              <span>数据大屏</span>
+            </el-menu-item>
+            <el-menu-item index="/help">
+              <el-icon><QuestionFilled /></el-icon>
+              <span>帮助中心</span>
+            </el-menu-item>
         </el-menu>
       </el-aside>
 

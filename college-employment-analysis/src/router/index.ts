@@ -78,6 +78,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/data-visualization',
+      name: 'DataVisualization',
+      component: () => import('../views/DataVisualization.vue'),
+      meta: {
+        title: '数据可视化大屏'
+      }
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('../views/NotFound.vue'),
