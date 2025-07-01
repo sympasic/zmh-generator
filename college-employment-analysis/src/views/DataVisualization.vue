@@ -151,19 +151,113 @@
     <div class="particle-container">
       <div class="particle" v-for="n in 20" :key="n" :style="getParticleStyle()"></div>
     </div>
+
+    <!-- 浮动导航控制面板 -->
+    <div class="floating-nav" :class="{ 'nav-expanded': isNavExpanded }">
+      <div class="nav-toggle" @click="toggleNav">
+        <el-icon class="nav-icon">
+          <Menu v-if="!isNavExpanded" />
+          <Close v-else />
+        </el-icon>
+      </div>
+      
+      <div class="nav-menu" v-show="isNavExpanded">
+        <div class="nav-title">功能导航</div>
+        <div class="nav-grid">
+          <div class="nav-item" @click="navigateTo('/dashboard')">
+            <el-icon><Monitor /></el-icon>
+            <span>数据概览</span>
+          </div>
+          <div class="nav-item" @click="navigateTo('/salary-analysis')">
+            <el-icon><Money /></el-icon>
+            <span>薪资分析</span>
+          </div>
+          <div class="nav-item" @click="navigateTo('/industry-analysis')">
+            <el-icon><TrendCharts /></el-icon>
+            <span>行业分析</span>
+          </div>
+          <div class="nav-item" @click="navigateTo('/region-analysis')">
+            <el-icon><Location /></el-icon>
+            <span>地区分析</span>
+          </div>
+          <div class="nav-item" @click="navigateTo('/reports/employment')">
+            <el-icon><Document /></el-icon>
+            <span>就业报告</span>
+          </div>
+          <div class="nav-item" @click="navigateTo('/reports/trend')">
+            <el-icon><DataLine /></el-icon>
+            <span>趋势报告</span>
+          </div>
+          <div class="nav-item" @click="navigateTo('/data-management')">
+            <el-icon><FolderOpened /></el-icon>
+            <span>数据管理</span>
+          </div>
+          <div class="nav-item" @click="navigateTo('/help')">
+            <el-icon><QuestionFilled /></el-icon>
+            <span>帮助中心</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 快捷操作按钮组 -->
+    <div class="quick-actions">
+      <el-tooltip content="全屏显示" placement="left">
+        <div class="action-btn" @click="toggleFullscreen">
+          <el-icon><FullScreen /></el-icon>
+        </div>
+      </el-tooltip>
+      <el-tooltip content="刷新数据" placement="left">
+        <div class="action-btn" @click="refreshData">
+          <el-icon><Refresh /></el-icon>
+        </div>
+      </el-tooltip>
+      <el-tooltip content="导出截图" placement="left">
+        <div class="action-btn" @click="exportScreenshot">
+          <el-icon><Camera /></el-icon>
+        </div>
+      </el-tooltip>
+      <el-tooltip content="系统设置" placement="left">
+        <div class="action-btn" @click="openSettings">
+          <el-icon><Setting /></el-icon>
+        </div>
+      </el-tooltip>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useEmploymentStore } from '@/stores/employment'
+import { ElMessage } from 'element-plus'
+import { 
+  Menu, 
+  Close, 
+  Monitor, 
+  Money, 
+  TrendCharts, 
+  Location, 
+  Document, 
+  DataLine, 
+  FolderOpened, 
+  QuestionFilled, 
+  FullScreen, 
+  Refresh, 
+  Camera, 
+  Setting 
+} from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import chinaMapData from '@/assets/china.json'
 
+const router = useRouter()
 const employmentStore = useEmploymentStore()
 
 // 注册地图数据
 echarts.registerMap('china', chinaMapData as any)
+
+// 导航控制
+const isNavExpanded = ref(false)
 
 // 时间相关
 const currentTime = ref('')
@@ -443,6 +537,41 @@ const updateDataStream = () => {
   if (dataStream.value.length > 5) {
     dataStream.value.pop()
   }
+}
+
+// 导航功能
+const toggleNav = () => {
+  isNavExpanded.value = !isNavExpanded.value
+}
+
+const navigateTo = (path: string) => {
+  router.push(path)
+  isNavExpanded.value = false
+}
+
+// 快捷操作功能
+const toggleFullscreen = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {
+      ElMessage.warning('无法进入全屏模式')
+    })
+  } else {
+    document.exitFullscreen()
+  }
+}
+
+const refreshData = () => {
+  // 刷新所有数据
+  updateDataStream()
+  ElMessage.success('数据已刷新')
+}
+
+const exportScreenshot = () => {
+  ElMessage.info('截图功能开发中...')
+}
+
+const openSettings = () => {
+  ElMessage.info('设置功能开发中...')
 }
 
 let timeInterval: NodeJS.Timeout
@@ -852,5 +981,147 @@ onUnmounted(() => {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #ff6b9d;
+}
+
+/* 浮动导航面板 */
+.floating-nav {
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.nav-toggle {
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00d4ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.nav-toggle:hover {
+  background: rgba(0, 212, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.nav-icon {
+  font-size: 20px;
+  color: #00d4ff;
+}
+
+.nav-menu {
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #00d4ff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
+  backdrop-filter: blur(20px);
+  min-width: 320px;
+  animation: slideInLeft 0.3s ease;
+}
+
+.nav-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #00d4ff;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  padding-bottom: 10px;
+}
+
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 10px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  color: #a0c4ff;
+}
+
+.nav-item:hover {
+  background: rgba(0, 212, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+  color: #00d4ff;
+}
+
+.nav-item .el-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #00d4ff;
+}
+
+/* 快捷操作按钮组 */
+.quick-actions {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.action-btn {
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #ff6b9d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: rgba(255, 107, 157, 0.2);
+  transform: scale(1.1);
+}
+
+.action-btn .el-icon {
+  font-size: 20px;
+  color: #ff6b9d;
+}
+
+/* 动画效果 */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px) translateY(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(-50%);
+  }
 }
 </style>

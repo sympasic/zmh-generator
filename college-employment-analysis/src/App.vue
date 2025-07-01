@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { 
   DataAnalysis, 
@@ -16,10 +16,17 @@ import {
   Document, 
   DataLine, 
   FolderOpened, 
-  QuestionFilled 
+  QuestionFilled,
+  Monitor
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
+const router = useRouter()
+
+// 判断是否为数据可视化大屏页面
+const isDataVisualizationPage = computed(() => {
+  return route.path === '/data-visualization'
+})
 
 // 面包屑导航
 const currentBreadcrumb = computed(() => {
@@ -36,6 +43,11 @@ const currentBreadcrumb = computed(() => {
   }
   return breadcrumbMap[route.path] || ''
 })
+
+// 返回数据可视化大屏
+const goToDataVisualization = () => {
+  router.push('/data-visualization')
+}
 
 // 刷新数据
 const refreshData = () => {
@@ -70,7 +82,7 @@ onMounted(() => {
 <template>
   <el-container class="app-container">
     <!-- 顶部导航栏 -->
-    <el-header class="app-header">
+    <el-header class="app-header" v-if="!isDataVisualizationPage">
       <div class="header-left">
         <div class="logo">
           <el-icon class="logo-icon"><DataAnalysis /></el-icon>
@@ -78,6 +90,10 @@ onMounted(() => {
         </div>
       </div>
       <div class="header-right">
+        <el-button text @click="goToDataVisualization">
+          <el-icon><Monitor /></el-icon>
+          返回大屏
+        </el-button>
         <el-button text @click="refreshData">
           <el-icon><Refresh /></el-icon>
           刷新数据
@@ -104,7 +120,7 @@ onMounted(() => {
       </div>
     </el-header>
 
-    <el-container>
+    <el-container v-if="!isDataVisualizationPage">
       <!-- 左侧菜单 -->
       <el-aside width="250px" class="app-aside">
         <el-menu
@@ -184,7 +200,7 @@ onMounted(() => {
     </el-container>
 
     <!-- 页脚 -->
-    <el-footer class="app-footer">
+    <el-footer class="app-footer" v-if="!isDataVisualizationPage">
       <div class="footer-content">
         <span>© 2024 大学生就业大数据分析平台. All rights reserved.</span>
         <span class="footer-links">
@@ -194,6 +210,9 @@ onMounted(() => {
         </span>
       </div>
     </el-footer>
+
+    <!-- 数据可视化大屏单独渲染 -->
+    <RouterView v-if="isDataVisualizationPage" class="fullscreen-view" />
   </el-container>
 </template>
 
@@ -343,5 +362,15 @@ onMounted(() => {
 
 :deep(.el-button.is-text:hover) {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 全屏视图样式 */
+.fullscreen-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
 }
 </style>
