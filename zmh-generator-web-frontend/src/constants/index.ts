@@ -1,9 +1,13 @@
 /**
  * 本地后端地址
  */
-export const BACKEND_HOST_LOCAL = "http://127.0.0.1:8120";
+export const BACKEND_HOST_LOCAL = "http://localhost:8120";
 
 /**
  * 线上后端地址
  */
 export const BACKEND_HOST_PROD = "https://yupi.icu";
+/**
+ * COS 访问地址
+ */
+export const COS_HOST = "https://zmh-1331417654.cos.ap-guangzhou.myqcloud.com";
