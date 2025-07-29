@@ -71,7 +71,7 @@ declare namespace API {
 
   type downloadGeneratorByIdUsingGETParams = {
     /** id */
-    id?: string;
+    id?: number;
   };
 
   type FileConfig = {
@@ -173,6 +173,11 @@ declare namespace API {
     status?: number;
     tags?: string[];
     version?: string;
+  };
+
+  type GeneratorUseRequest = {
+    dataModel?: Record<string, any>;
+    id?: string;
   };
 
   type GeneratorVO = {
